@@ -22,7 +22,13 @@ class Video:
         delete_video_files()
 
         # Embed initial
-        initial_embed = Embed(title="Building video", description="Initializing...", color=0x00ff00)
+        initial_embed = Embed(
+            title="Building video...",
+            description="Initializing...",
+            color=0xFF5733,
+            timestamp=datetime.now()
+        )
+        initial_embed.set_footer(text="Pinkbike Video Builder", icon_url=self.interaction.user.avatar.url)
         await self.interaction.edit_original_response(embed=initial_embed)
 
         for i, url in enumerate(urls):
@@ -31,17 +37,17 @@ class Video:
             self.video_files.append(filename)
 
             # Update the embed
-            progress_embed = Embed(title="Building video", description=f"Downloading video {i + 1}/{len(urls)}",
-                                   color=0x00ff00)
-            await self.interaction.edit_original_response(embed=progress_embed)
+            initial_embed.title = "Building video..."
+            initial_embed.description = f"Downloading video {i + 1}/{len(urls)}"
+            await self.interaction.edit_original_response(embed=initial_embed)
 
             # Download the video
             await download_video(converted_url, filename)
 
             # Update the embed again
-            success_embed = Embed(title="Building video",
-                                  description=f"Successfully downloaded video {i + 1}/{len(urls)}", color=0x00ff00)
-            await self.interaction.edit_original_response(embed=success_embed)
+            initial_embed.title = "Building video..."
+            initial_embed.description = f"Successfully downloaded video {i + 1}/{len(urls)}"
+            await self.interaction.edit_original_response(embed=initial_embed)
 
             # Check if the file is empty
             if os.path.getsize(filename) == 0:
@@ -51,44 +57,48 @@ class Video:
             converted_filename = "Converted/" + get_converted_filename(filename.split("/")[1].split(".")[0] + ".mp4")
 
             # Convert the video
-            converting_embed = Embed(title="Building video", description=f"Converting video {i + 1}/{len(urls)}",
-                                     color=0x00ff00)
-            await self.interaction.edit_original_response(embed=converting_embed)
+            initial_embed.title = "Building video..."
+            initial_embed.description = f"Converting video {i + 1}/{len(urls)}"
+            await self.interaction.edit_original_response(embed=initial_embed)
             await convert_video(filename, converted_filename)
 
             # Successfully converted video
-            converted_embed = Embed(title="Building video",
-                                    description=f"Successfully converted video {i + 1}/{len(urls)}", color=0x00ff00)
-            await self.interaction.edit_original_response(embed=converted_embed)
+            initial_embed.title = "Building video..."
+            initial_embed.description = f"Successfully converted video {i + 1}/{len(urls)}"
+            await self.interaction.edit_original_response(embed=initial_embed)
 
             # Add the converted file to the list
             self.converted_files.append(converted_filename)
 
         # Combining videos
-        combining_embed = Embed(title="Building video", description="Combining the videos...", color=0x00ff00)
-        await self.interaction.edit_original_response(embed=combining_embed)
+        initial_embed.title = "Building video..."
+        initial_embed.description = "Combining the videos..."
+        await self.interaction.edit_original_response(embed=initial_embed)
         combined_clip = concatenate_videos(self.converted_files)
 
         # Writing the final video
-        writing_embed = Embed(title="Building video", description="Writing the final video...", color=0x00ff00)
-        await self.interaction.edit_original_response(embed=writing_embed)
+        initial_embed.title = "Building video..."
+        initial_embed.description = "Writing the final video..."
+        await self.interaction.edit_original_response(embed=initial_embed)
         combined_clip.write_videofile("Result/result.mp4", preset="ultrafast", codec="libx264",
                                       ffmpeg_params=['-profile:v', 'high', '-level', '4.2', '-pix_fmt', 'yuv420p',
                                                      '-hide_banner', '-loglevel', 'error'])
 
         # Adding watermark
-        watermark_embed = Embed(title="Building video", description="Adding watermark to the final video...",
-                                color=0x00ff00)
-        await self.interaction.edit_original_response(embed=watermark_embed)
+        initial_embed.title = "Building video..."
+        initial_embed.description = "Adding watermark to the final video..."
+        await self.interaction.edit_original_response(embed=initial_embed)
         await add_watermark("Result/result.mp4", "Result/result_watermark.mp4")
 
         # Adding audio
-        audio_embed = Embed(title="Building video", description="Adding audio to the final video...", color=0x00ff00)
-        await self.interaction.edit_original_response(embed=audio_embed)
+        initial_embed.title = "Building video..."
+        initial_embed.description = "Adding audio to the final video..."
+        await self.interaction.edit_original_response(embed=initial_embed)
         await add_subscribe_voice("Result/result_watermark.mp4", f"C:/PublicDownloads/result{self.date_and_time}.mp4")
 
         # Done
-        done_embed = Embed(title="Done!", description="Your video is ready!", color=0x00ff00)
-        await self.interaction.edit_original_response(embed=done_embed)
+        initial_embed.title = "Done!"
+        initial_embed.description = "Your video is ready!"
+        await self.interaction.edit_original_response(embed=initial_embed)
 
     delete_video_files()
