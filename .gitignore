@@ -1,10 +1,5 @@
-/data/subscribe_voice.mp3
-/Result/result_watermark_audio.mp4
-/Result/result_watermark.mp4
-/Result/result.mp4
-/.idea/inspectionProfiles/profiles_settings.xml
-/.idea/vcs.xml
-/.idea/inspectionProfiles/Project_Default.xml
-/.idea/MTBCrashesCompilMaker.iml
-/.idea/modules.xml
-/.idea/misc.xml
+/data/*
+/Result/*
+/Converted/*
+/Downloaded/*
+/.idea/*
